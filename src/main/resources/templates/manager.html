@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Manage Library</title>
+
+    <!-- Style -->
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+
+    <script>
+
+    function sendEmail() {
+        document.getElementById("userprops").value = "";
+        username = document.getElementById("username").value;
+        console.log("sendEmai(" + username + ") .....");
+
+        const Http = new XMLHttpRequest();
+        const url='http://localhost:8086/user/' + username + "/email";
+        Http.open("POST", url);
+        Http.send();
+
+        Http.onreadystatechange = function() {
+            console.log(Http.responseText);
+            if(this.readyState == 4) {  // request completed
+                if(this.status > 299) {
+                    alert("Email could not be sent !");
+                }
+                document.getElementById("userprops").value = Http.responseText;
+            }
+        }
+    }
+
+    function setUserRole() {
+        document.getElementById("userprops").value = "";
+        username = document.getElementById("username").value;
+        role = document.getElementById("role").value;
+        console.log("setUserRole(" + username+" | " + role + ") .....");
+
+        const Http = new XMLHttpRequest();
+        const url='http://localhost:8086/user/' + username + "/" + role;
+        Http.open("POST", url);
+        Http.send();
+
+        Http.onreadystatechange = function() {
+            console.log(Http.responseText);
+            if(this.readyState == 4) {  // request completed
+                if(this.status > 299) {
+                    alert("User could not be modified !");
+                }
+                document.getElementById("userprops").value = Http.responseText;
+            }
+        }
+    }
+
+    function setState() {
+        document.getElementById("userprops").value = "";
+        username = document.getElementById("username").value;
+        state = document.getElementById("enabled").value;
+        newstate = 0;
+        if(state.startsWith("E")) newstate = 1;
+        console.log("setState(" + username+" | " + newstate + ") .....");
+
+
+        const Http = new XMLHttpRequest();
+        const url='http://localhost:8086/user/' + username + "/enable/" + newstate;
+        Http.open("PUT", url);
+        Http.send();
+
+        Http.onreadystatechange = function() {
+            console.log(Http.responseText);
+            if(this.readyState == 4) {  // request completed
+                if(this.status > 299) {
+                    alert("User could not be modified !");
+                }
+                document.getElementById("userprops").value = Http.responseText;
+            }
+        }
+    }
+
+
+    function login() {
+        document.getElementById("userprops").value = "";
+        username = document.getElementById("username").value;
+        password = document.getElementById("pwd").value;
+        console.log("login(" + username+" | " + password + ") .....");
+
+        const Http = new XMLHttpRequest();
+        const url='http://localhost:8086/user/' + username;
+        Http.open("POST", url);
+        Http.setRequestHeader("Content-Type", "application/json");
+        sdata = "{ \"email\": \"st\", \"password\": \"" + password +"\", \"username\": \"st\" }";
+        console.log(sdata);
+        Http.send(sdata);
+
+        Http.onreadystatechange = function() {
+            console.log(Http.responseText);
+            if(this.readyState == 4) {  // request completed
+                if(this.status > 299) {
+                    alert("User could not be logged in !");
+                    document.getElementById("userprops").value = "User could not be logged in !";
+                }
+                else {
+                    document.getElementById("userprops").value = Http.responseText;
+                }
+            }
+        }
+    }
+
+    function createUser() {
+        document.getElementById("userprops").value = "";
+        username = document.getElementById("username").value;
+        password = document.getElementById("pwd").value;
+        email = document.getElementById("email").value;
+        console.log("createUser(" + username+" | " + password + " | " + email + ") .....");
+
+        const Http = new XMLHttpRequest();
+        const url='http://localhost:8086/user/' ;
+        Http.open("POST", url);
+        Http.setRequestHeader("Content-Type", "application/json");
+        sdata = "{ \"email\": \""+email +"\", \"password\": \"" + password +"\", \"username\": \""+username+"\" }";
+        console.log(sdata);
+        Http.send(sdata);
+
+        Http.onreadystatechange = function() {
+            console.log(Http.responseText);
+            if(this.readyState == 4) {  // request completed
+                if(this.status > 299) {
+                    alert("User could not be  created !");
+                    document.getElementById("userprops").value = Http.responseText;
+                }
+                else {
+                    document.getElementById("userprops").value = Http.responseText;
+                }
+            }
+        }
+    }
+
+
+    function getuserinfo() {
+        document.getElementById("userprops").value = "";
+        username = document.getElementById("username").value;
+        console.log("getUserInfo(" + username+") .....");
+
+        const Http = new XMLHttpRequest();
+        const url='http://localhost:8086/user/' + username;
+        Http.open("GET", url);
+        Http.send();
+
+        Http.onreadystatechange = function() {
+            console.log(Http.responseText);
+            if(this.readyState == 4) {  // request completed
+                if(this.status > 299) {
+                    alert("User not found at the server !");
+                    document.getElementById("userprops").value = "User not found !";
+                }
+                else {
+                    document.getElementById("userprops").value = Http.responseText;
+                }
+            }
+        }
+    }
+
+
+    function deleteUser() {
+        document.getElementById("userprops").value = "";
+        username = document.getElementById("username").value;
+        console.log("deleteUser(" + username+") .....");
+
+        const Http = new XMLHttpRequest();
+        const url='http://localhost:8086/user/' + username;
+        Http.open("DELETE", url);
+        Http.send();
+
+        Http.onreadystatechange = function() {
+            console.log(Http.responseText);
+            if(this.readyState == 4) {  // request completed
+                if(this.status > 299) {
+                    alert("User not found at the server !");
+                    document.getElementById("userprops").value = Http.responseText;
+                }
+                else {
+                    document.getElementById("userprops").value = "User successfully deleted !";
+                }
+            }
+        }
+    }
+    </script>
+
+</head>
+<body>
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="#">Remote Test Lab</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/books">Users Information</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/manager">Login Page <span class="sr-only">(current)</span></a>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="starter-template">
+    <h1>User Manipulation (Test/Login/Create) <span th:text="${name}"></span></h1>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2">
+            <h4>Username:</h4>
+        </div>
+        <div class="col-sm-2">
+            <h4>Email:</h4>
+        </div>
+        <div class="col-sm-2">
+            <h4>Password:</h4>
+        </div>
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-primary btn-block  mt-1"
+                    onclick=getuserinfo()>GetUserInfo
+            </button>
+        </div>
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-outline-warning btn-block  mt-1"
+                    onclick=setUserRole()>SetUserRole
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-2">
+            <div class="input-group">
+                <input type="text" class="form-control" id="username" name="username">
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="email" name="email">
+        </div>
+        <div class="col-sm-2">
+            <input type="password" class="form-control" id="pwd" name="pwd">
+        </div>
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-success btn-block mt-1"
+                    onclick=login()>Login
+            </button>
+        </div>
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-outline-secondary btn-block mt-1"
+                    onclick=setState()>SetState
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-2">
+            <h4>Role:</h4>
+        </div>
+        <div class="col-sm-2">
+            <h4>State:</h4>
+        </div>
+        <div class="col-sm-2">
+        </div>
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-secondary btn-block mt-1"
+                    onclick=createUser()>Create User
+            </button>
+        </div>
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-outline-primary btn-block mt-1"
+                    onclick=sendEmail()>Send Email
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-2">
+            <select class="form-control" id="role" name="rolelist1">
+                <option>rtl_user</option>
+                <option>rtl_admin</option>
+                <option>rtl_superadmin</option>
+            </select>
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control" id="enabled" name="enabled">
+                <option>Disabled</option>
+                <option>Enabled</option>
+            </select>
+        </div>
+        <div class="col-sm-2">
+        </div>
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-danger btn-block mt-1"
+                    onclick=deleteUser()>Delete User
+            </button>
+        </div>
+    </div>
+
+    <br>
+    <div class="row">
+        <div class="col-sm-12">
+            <h5>Info Area:</h5>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <textarea id="userprops" rows="15" cols="130"></textarea><br>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+</body>
+</html>
