@@ -78,6 +78,30 @@
         }
     }
 
+    function updatePassword() {
+        document.getElementById("userprops").value = "";
+        username = document.getElementById("username").value;
+        password = document.getElementById("pwd").value;
+        console.log("updatePassword(" + username+" | " + password + ") .....");
+
+        const Http = new XMLHttpRequest();
+        const url='http://localhost:8086/user/' + username + "/password";
+        sdata = password;
+        console.log("DATA:  " + sdata);
+        Http.open("PUT", url);
+        Http.send(sdata);
+
+        Http.onreadystatechange = function() {
+            console.log(Http.responseText);
+            if(this.readyState == 4) {  // request completed
+                if(this.status > 299) {
+                    alert("User's password could not be modified !");
+                }
+                document.getElementById("userprops").value = Http.responseText;
+            }
+        }
+    }
+
 
     function login() {
         document.getElementById("userprops").value = "";
@@ -232,6 +256,8 @@
             <h4>Password:</h4>
         </div>
         <div class="col-sm-2">
+        </div>
+        <div class="col-sm-2">
             <button type="button" class="btn btn-primary btn-block  mt-1"
                     onclick=getuserinfo()>GetUserInfo
             </button>
@@ -256,6 +282,8 @@
             <input type="password" class="form-control" id="pwd" name="pwd">
         </div>
         <div class="col-sm-2">
+        </div>
+        <div class="col-sm-2">
             <button type="button" class="btn btn-success btn-block mt-1"
                     onclick=login()>Login
             </button>
@@ -273,6 +301,9 @@
         </div>
         <div class="col-sm-2">
             <h4>State:</h4>
+        </div>
+        <div class="col-sm-2">
+            <h4>UserId:</h4>
         </div>
         <div class="col-sm-2">
         </div>
@@ -302,14 +333,42 @@
                 <option>Enabled</option>
             </select>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-4">
+            <input type="text" class="form-control" id="userid" name="userid">
         </div>
         <div class="col-sm-2">
             <button type="button" class="btn btn-danger btn-block mt-1"
                     onclick=deleteUser()>Delete User
             </button>
         </div>
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-outline-success btn-block mt-1"
+                    onclick=updatePassword()>Update Password
+            </button>
+        </div>
     </div>
+
+    <div class="row">
+        <div class="col-sm-2">
+        </div>
+        <div class="col-sm-2">
+        </div>
+        <div class="col-sm-2">
+        </div>
+        <div class="col-sm-2">
+        </div>
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-warning btn-block mt-1"
+                    onclick=setPwdById()>Set PWD by Id
+            </button>
+        </div>
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-outline-primary btn-block mt-1"
+                    onclick=dummy()>Dummy
+            </button>
+        </div>
+    </div>
+
 
     <br>
     <div class="row">
