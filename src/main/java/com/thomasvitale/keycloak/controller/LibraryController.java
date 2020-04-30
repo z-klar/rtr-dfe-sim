@@ -5,6 +5,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.thomasvitale.keycloak.repository.BookRepository;
 import org.keycloak.KeycloakSecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,9 @@ public class LibraryController {
 	private final HttpServletRequest request;
 	private final BookRepository bookRepository;
 
+	@Value("${rtl.backend.url}")
+	private String RtlBeUrl;
+
 	@Autowired
 	public LibraryController(HttpServletRequest request, BookRepository bookRepository) {
 		this.request = request;
@@ -32,14 +36,14 @@ public class LibraryController {
 
 	@GetMapping(value = "/books")
 	public String getBooks(Model model) {
-		//configCommonAttributes(model);
+		model.addAttribute("rtlbeurl", RtlBeUrl);
 		model.addAttribute("books", bookRepository.readAll());
 		return "books";
 	}
 
 	@GetMapping(value = "/manager")
 	public String getManager(Model model) {
-		//configCommonAttributes(model);
+		model.addAttribute("rtlbeurl", RtlBeUrl);
 		model.addAttribute("books", bookRepository.readAll());
 		return "manager";
 	}
@@ -54,6 +58,7 @@ public class LibraryController {
 			String subj;
 			subj = "Subject:    " + jwt.getSubject();
 			out += subj;  out += "\n";
+			model.addAttribute("rtlbeurl", RtlBeUrl);
 			model.addAttribute("userid", jwt.getSubject());
 			model.addAttribute("books", bookRepository.readAll());
 			return "verify";

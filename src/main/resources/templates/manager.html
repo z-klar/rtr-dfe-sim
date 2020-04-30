@@ -10,13 +10,15 @@
 
     <script>
 
+    var rtlBackendUrl = "[[${rtlbeurl}]]";
+
     function sendEmail() {
         document.getElementById("userprops").value = "";
         username = document.getElementById("username").value;
         console.log("sendEmai(" + username + ") .....");
 
         const Http = new XMLHttpRequest();
-        const url='http://localhost:8086/user/' + username + "/email";
+        const url = rtlBackendUrl + username + "/email";
         Http.open("POST", url);
         Http.send();
 
@@ -38,7 +40,7 @@
         console.log("setUserRole(" + username+" | " + role + ") .....");
 
         const Http = new XMLHttpRequest();
-        const url='http://localhost:8086/user/' + username + "/" + role;
+        const url = rtlBackendUrl + username + "/" + role;
         Http.open("POST", url);
         Http.send();
 
@@ -63,7 +65,7 @@
 
 
         const Http = new XMLHttpRequest();
-        const url='http://localhost:8086/user/' + username + "/enable/" + newstate;
+        const url = rtlBackendUrl + username + "/enable/" + newstate;
         Http.open("PUT", url);
         Http.send();
 
@@ -85,7 +87,31 @@
         console.log("updatePassword(" + username+" | " + password + ") .....");
 
         const Http = new XMLHttpRequest();
-        const url='http://localhost:8086/user/' + username + "/password";
+        const url = rtlBackendUrl + username + "/password";
+        sdata = password;
+        console.log("DATA:  " + sdata);
+        Http.open("PUT", url);
+        Http.send(sdata);
+
+        Http.onreadystatechange = function() {
+            console.log(Http.responseText);
+            if(this.readyState == 4) {  // request completed
+                if(this.status > 299) {
+                    alert("User's password could not be modified !");
+                }
+                document.getElementById("userprops").value = Http.responseText;
+            }
+        }
+    }
+
+    function setPwdById() {
+        document.getElementById("userprops").value = "";
+        userid = document.getElementById("userid").value;
+        password = document.getElementById("pwd").value;
+        console.log("updatePassword(" + userid+" | " + password + ") .....");
+
+        const Http = new XMLHttpRequest();
+        const url = rtlBackendUrl + userid + "/passwordbyid";
         sdata = password;
         console.log("DATA:  " + sdata);
         Http.open("PUT", url);
@@ -110,7 +136,7 @@
         console.log("login(" + username+" | " + password + ") .....");
 
         const Http = new XMLHttpRequest();
-        const url='http://localhost:8086/user/' + username;
+        const url = rtlBackendUrl + username;
         Http.open("POST", url);
         Http.setRequestHeader("Content-Type", "application/json");
         sdata = "{ \"email\": \"st\", \"password\": \"" + password +"\", \"username\": \"st\" }";
@@ -139,7 +165,7 @@
         console.log("createUser(" + username+" | " + password + " | " + email + ") .....");
 
         const Http = new XMLHttpRequest();
-        const url='http://localhost:8086/user/' ;
+        const url = rtlBackendUrl ;
         Http.open("POST", url);
         Http.setRequestHeader("Content-Type", "application/json");
         sdata = "{ \"email\": \""+email +"\", \"password\": \"" + password +"\", \"username\": \""+username+"\" }";
@@ -167,7 +193,7 @@
         console.log("getUserInfo(" + username+") .....");
 
         const Http = new XMLHttpRequest();
-        const url='http://localhost:8086/user/' + username;
+        const url = rtlBackendUrl + username;
         Http.open("GET", url);
         Http.send();
 
@@ -192,7 +218,7 @@
         console.log("deleteUser(" + username+") .....");
 
         const Http = new XMLHttpRequest();
-        const url='http://localhost:8086/user/' + username;
+        const url = rtlBackendUrl + username;
         Http.open("DELETE", url);
         Http.send();
 

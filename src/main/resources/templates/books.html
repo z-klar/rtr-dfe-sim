@@ -9,11 +9,12 @@
     <link rel="stylesheet" type="text/css" href="/css/style.css">
 
     <script>
+        var rtlBackendUrl = "[[${rtlbeurl}]]";
 
         function update() {
 
             const Http = new XMLHttpRequest();
-            const url='http://localhost:8086/user/';
+            const url = rtlBackendUrl;
             Http.open("GET", url);
             Http.send();
 
@@ -26,9 +27,6 @@
                     else {
 
                         var table = document.getElementById("tableBody");
-                        //while (table.hasChildNodes()) {
-                        //    table.removeChild(node.lastChild);
-                        //}
                         var tb = document.getElementById('tableBody');
                         while(tb.rows.length > 0) {
                               tb.deleteRow(0);
